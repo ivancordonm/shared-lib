@@ -34,6 +34,7 @@ def call(Map pipeline_config = [:]) {
                         def version
                         if (pom_version.contains('SNAPSHOT')) {
                             version = pom_version.replace('-SNAPSHOT', '')
+                            logger.info("version: ${version.split('\\.')}")
                             switch (config.version.upgrade) {
                                 case 'major':
                                     version = version.split('\\.')[0].toInteger() + 1
