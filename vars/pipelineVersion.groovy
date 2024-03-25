@@ -2,7 +2,7 @@ import utils.Logger
 
 def call(Map pipeline_config = [:]) {
     def logger = new Logger(this, 'DEBUG')
-    logger.debug("pipeline_config: ${pipeline_config}")
+    logger.info("pipeline_config: ${pipeline_config}")
     pipeline {
         agent { label 'linux' }
         stages {
@@ -10,6 +10,8 @@ def call(Map pipeline_config = [:]) {
                 steps {
                     script {
                         sh "echo ${pipeline_config}"
+                        def config = step.readYaml file: 'CI/JenkinsFiles/config.yml'
+                        logger.info("config: ${config}")
                     }
                 }
             }
