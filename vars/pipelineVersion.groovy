@@ -9,9 +9,13 @@ def call(Map pipeline_config = [:]) {
             stage('Get Pipeline Version') {
                 steps {
                     script {
-                        sh "echo ${pipeline_config}"
-                        def config = step.readYaml file: 'CI/JenkinsFiles/config.yml'
-                        sh "echo ${config}"
+                        def config
+                        try {
+                            config = step.readYaml text: "CI/JenkinsFiles/config.yml"
+                        } catch (FileNotFoundException e) {
+                            logger.error("Error: ${e}")
+                        }
+                        logger.info("config: ${config}")
                     }
                 }
             }
