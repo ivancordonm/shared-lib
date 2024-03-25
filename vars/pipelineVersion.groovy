@@ -11,7 +11,7 @@ def call(Map pipeline_config = [:]) {
                     script {
                         sh "echo ${pipeline_config}"
                         def config = step.readYaml file: 'CI/JenkinsFiles/config.yml'
-                        logger.info("config: ${config}")
+                        sh "echo ${config}"
                     }
                 }
             }
