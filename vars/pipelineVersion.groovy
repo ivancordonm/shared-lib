@@ -11,7 +11,7 @@ def call(Map pipeline_config = [:]) {
                     script {
                         def config
                         try {
-                            config = readYaml text: "CI/JenkinsFiles/config.yml"
+                            config = this.readYaml text: "CI/JenkinsFiles/config.yml"
                         } catch (FileNotFoundException e) {
                             logger.error("Error: ${e}")
                         }
