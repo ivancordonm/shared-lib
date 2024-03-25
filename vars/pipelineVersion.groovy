@@ -9,7 +9,7 @@ def call(Map pipeline_config = [:]) {
             stage('Get Pipeline Version') {
                 steps {
                     script {
-                        sh "echo ${pipeline_config['pipelineVersion']} > pipelineVersion"
+                        sh "echo ${pipeline_config}"
                     }
                 }
             }
