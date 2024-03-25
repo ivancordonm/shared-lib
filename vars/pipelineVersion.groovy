@@ -6,7 +6,7 @@ def call(Map pipeline_config = [:]) {
     pipeline {
         agent { label 'linux' }
         stages {
-            stage('Get Pipeline Version') {
+            stage('Config') {
                 steps {
                     script {
                         def config
@@ -16,6 +16,19 @@ def call(Map pipeline_config = [:]) {
                             logger.error("Error: ${e}")
                         }
                         logger.info("config: ${config}")
+                    }
+                }
+            }
+            stage('Version') {
+                steps {
+                    script {
+                        //read pom.xml
+                        def pom
+                        try {
+                            pom = readMavenPom file: 'pom.xml'
+                        } catch (FileNotFoundException e) {
+                            logger.error("Error: ${e}")
+                        }
                     }
                 }
             }
