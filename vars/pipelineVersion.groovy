@@ -58,6 +58,10 @@ def call(Map pipeline_config = [:]) {
                         logger.info("new version: ${version}")
                         pom.version = version
                         writeMavenPom file: 'pom.xml', model: pom
+                        // commit new version
+                        sh "git add pom.xml"
+                        sh "git commit -m 'Upgrade version to ${version}'"
+                        sh "git push"
                     }
                 }
             }
