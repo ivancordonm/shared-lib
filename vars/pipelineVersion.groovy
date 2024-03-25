@@ -6,10 +6,10 @@ def call(Map pipeline_config = [:]) {
     pipeline {
         agent { label 'linux' }
         stages {
+            def config
             stage('Config') {
                 steps {
                     script {
-                        def config
                         try {
                             config = readYaml file: "CI/JenkinsFiles/config.yml"
                         } catch (FileNotFoundException e) {
