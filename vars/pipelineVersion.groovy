@@ -3,10 +3,10 @@ import utils.Logger
 def call(Map pipeline_config = [:]) {
     def logger = new Logger(this, 'DEBUG')
     logger.info("pipeline_config: ${pipeline_config}")
+    def config
     pipeline {
         agent { label 'linux' }
         stages {
-            def config
             stage('Config') {
                 steps {
                     script {
