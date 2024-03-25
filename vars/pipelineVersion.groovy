@@ -37,19 +37,18 @@ def call(Map pipeline_config = [:]) {
                             logger.info("version: ${version.split('\\.')}")
                             switch (config.version.upgrade) {
                                 case 'major':
-                                    version = version.split('\\.')[0].toInteger() + 1
-                                    version = "${version}.0.0"
+                                    def s = version.split('\\.')
+                                    version = "${s[0].toInteger() + 1}.${s[1]}.${s[2]}"
                                     break
                                 case 'minor':
-                                    version = version.split('\\.')[1].toInteger() + 1
-                                    version = "${version}.0"
+                                    def v = version.split('\\.')
+                                    version = "${v[0]}.${v[1].toInteger() + 1}.${v[2]}"
                                     break
                                 case 'patch':
-                                    version = version.split('\\.')[2].toInteger() + 1
-                                    version = "${version}"
+                                    def v = version.split('\\.')
+                                    version = "${v[0]}.${v[1]}.${v[2].toInteger() + 1}"
                                     break
                                 default:
-                                    version = version
                                     break
                             }
 
