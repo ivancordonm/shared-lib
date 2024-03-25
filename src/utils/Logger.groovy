@@ -2,7 +2,7 @@ package utils
 
 class Logger {
 
-    def LOGGING_LEVELS = [FINE:0, TRACE:1, DEBUG:2, INFO:3, WARN:4, ERROR:5]
+    def LOGGING_LEVELS = [FINE: 0, TRACE: 1, DEBUG: 2, INFO: 3, WARN: 4, ERROR: 5]
 
     def level
     def step
@@ -25,46 +25,54 @@ class Logger {
         }
     }
 
-    def fine(message) {
+    def fine(message, instance = null, method = "") {
         if (this.level <= LOGGING_LEVELS.FINE) {
-            println "FINE: ${this.step} - ${message}"
+            printer("FINE", message, instance, method)
         }
     }
 
-    def trace(message) {
+    def trace(message, instance = null, method = "") {
         if (this.level <= LOGGING_LEVELS.TRACE) {
-            println "TRACE: ${this.step} - ${message}"
+            printer("TRACE", message, instance, method)
         }
     }
 
-    def debug(message) {
+    def debug(message, instance = null, method = "") {
         if (this.level <= LOGGING_LEVELS.DEBUG) {
-            println "DEBUG: ${this.step} - ${message}"
+            printer("DEBUG", message, instance, method)
         }
     }
 
-    def info(message) {
+    def info(message, instance = null, method = "") {
         if (this.level <= LOGGING_LEVELS.INFO) {
-            println "INFO: ${this.step} - ${message}"
+            printer("INFO", message, instance, method)
         }
     }
 
-    def warn(message) {
+    def warn(message, instance = null, method = "") {
         if (this.level <= LOGGING_LEVELS.WARN) {
-            println "WARN: ${this.step} - ${message}"
+            printer("WARN", message, instance, method)
         }
     }
 
-    def error(message) {
+    def error(message, instance = null, method = "") {
         if (this.level <= LOGGING_LEVELS.ERROR) {
-            println "ERROR: ${this.step} - ${message}"
+            printer("ERROR", message, instance, method)
         }
     }
 
-
-    def log(level, message) {
-        if (this.level <= LOGGING_LEVELS."${level}") {
-            println "${level}: ${this.step} - ${message}"
+    def printer(level, message, instance, method) {
+        try {
+            if (instance)
+                if (method)
+                    step.println("${level}: ${instance.getClass().getSimpleName()}.${method} - ${message}")
+                else
+                    step.println("${level}: ${instance.getClass().getSimpleName()} - ${message}")
+            else
+                step.println("${level}: ${message}")
+        } catch (Exception e) {
+            step.println("WARN: Some error occurred while logging")
+            step.println("${level}: ${message}")
         }
     }
 }
