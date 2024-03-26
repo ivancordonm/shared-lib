@@ -5,6 +5,7 @@ def call(Map pipeline_config = [:]) {
     logger.info("pipeline_config: ${pipeline_config}")
     def config
     def pom
+    def version
     pipeline {
         agent { label 'linux' }
         stages {
@@ -31,7 +32,6 @@ def call(Map pipeline_config = [:]) {
                         }
                         def pom_version = pom.version
                         logger.info("version: ${pom_version}")
-                        def version
                         if (pom_version.contains('SNAPSHOT')) {
                             version = pom_version.replace('-SNAPSHOT', '')
                         } else {
