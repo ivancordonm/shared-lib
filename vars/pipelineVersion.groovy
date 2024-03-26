@@ -30,30 +30,30 @@ def call(Map pipeline_config = [:]) {
                         } catch (FileNotFoundException e) {
                             logger.error("Error: ${e}")
                         }
-                        def pom_version = pom.version
-                        logger.info("version: ${pom_version}")
-                        if (pom_version.contains('SNAPSHOT')) {
-                            version = pom_version.replace('-SNAPSHOT', '')
-                        } else {
-                            version = pom_version
+                        def initialVersion = pom.version
+                        logger.info("version: ${initialVersion}")
+                        if (initialVersion.contains('SNAPSHOT')) {
+                            initialVersion = initialVersion.replace('-SNAPSHOT', '')
                         }
-                        logger.info("version: ${version.split('\\.')}")
+                        logger.info("version: ${initialVersion.split('\\.')}")
+                        def upgradedVersion = initialVersion
                         switch (config.version.upgrade) {
                             case 'major':
-                                def s = version.split('\\.')
-                                version = "${s[0].toInteger() + 1}.${s[1]}.${s[2]}"
+                                def s = initialVersion.split('\\.')
+                                upgradedVersion = "${s[0].toInteger() + 1}.${s[1]}.${s[2]}"
                                 break
                             case 'minor':
-                                def v = version.split('\\.')
-                                version = "${v[0]}.${v[1].toInteger() + 1}.${v[2]}"
+                                def v = initialVersion.split('\\.')
+                                upgradedVersion = "${v[0]}.${v[1].toInteger() + 1}.${v[2]}"
                                 break
                             case 'patch':
-                                def v = version.split('\\.')
-                                version = "${v[0]}.${v[1]}.${v[2].toInteger() + 1}"
+                                def v = initialVersion.split('\\.')
+                                upgradedVersion = "${v[0]}.${v[1]}.${v[2].toInteger() + 1}"
                                 break
                             default:
                                 break
                         }
+                        version = upgradedVersion
                     }
                 }
             }
