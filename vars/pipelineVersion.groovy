@@ -23,10 +23,10 @@ def call(Map pipeline_config = [:]) {
                 }
             }
             stage('Check enable') {
-                //If not enabled, exi
-                when {
-                    expression {
-                        return config.version.enable
+                script {
+                    if (!config.version.enable) {
+                        logger.info("Versioning is disabled")
+                        return
                     }
                 }
             }
