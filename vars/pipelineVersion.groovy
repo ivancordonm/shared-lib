@@ -77,11 +77,11 @@ def call(Map pipeline_config = [:]) {
 //                        sh "git config --global user.email 'ivancordonm@gmail.com'"
 //                        sh "git config --global user.name 'icordonm'"
                         withCredentials([gitUsernamePassword(credentialsId: 'Ivan-Github', gitToolName: 'git-tool')]) {
-                            sh "git pull origin main"
                             checkout scm
                             writeMavenPom file: 'pom.xml', model: pom
                             sh "git add pom.xml"
                             sh "git commit -m 'Upgrade version to ${version}'"
+                            sh "git pull"
                             sh "git push origin main"
                         }
                         logger.info("Version updated to ${version}")
