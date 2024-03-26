@@ -4,6 +4,7 @@ def call(Map pipeline_config = [:]) {
     def logger = new Logger(this, 'DEBUG')
     logger.info("pipeline_config: ${pipeline_config}")
     def config
+    def pom
     pipeline {
         agent { label 'linux' }
         stages {
@@ -23,7 +24,6 @@ def call(Map pipeline_config = [:]) {
                 steps {
                     script {
                         //read pom.xml
-                        def pom
                         try {
                             pom = readMavenPom file: 'pom.xml'
                         } catch (FileNotFoundException e) {
@@ -54,13 +54,19 @@ def call(Map pipeline_config = [:]) {
                             default:
                                 break
                         }
-
+                    }
+                }
+            }
+            stage('Update Git') {
+                steps {
+                    script {
                         logger.info("new version: ${version}")
                         pom.version = version
                         writeMavenPom file: 'pom.xml', model: pom
                         // commit new version
                         sh "git config --global user.email 'jenkins@localhost'"
                         sh "git config --global user.name 'Jenkins'"
+                        sh "git checkout SMC"
                         sh "git add pom.xml"
                         sh "git commit -m 'Upgrade version to ${version}'"
                         sh "git push"
