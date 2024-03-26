@@ -1,7 +1,7 @@
 import utils.Logger
 
 def call(Map pipeline_config = [:]) {
-    def logger = new Logger(this, 'DEBUG')
+    def logger = new Logger(this, pipeline_config?.logger?.level ?: 'INFO')
     logger.info("pipeline_config: ${pipeline_config}")
     def config
     def pom
@@ -12,32 +12,41 @@ def call(Map pipeline_config = [:]) {
             stage('Config') {
                 steps {
                     script {
+                        logger.info("Reading config.yml")
                         try {
                             config = readYaml file: "CI/JenkinsFiles/config.yml"
                         } catch (FileNotFoundException e) {
                             logger.error("Error: ${e}")
                         }
-                        logger.info("config: ${config}")
+                        logger.debug("config: ${config}")
+                    }
+                }
+            }
+            stage('Check enable') {
+                //If not enabled, exi
+                when {
+                    expression {
+                        return config.version.enable
                     }
                 }
             }
             stage('Version') {
                 steps {
                     script {
-                        //read pom.xml
+                        logger.info("Reading pom.xml")
                         try {
                             pom = readMavenPom file: 'pom.xml'
                         } catch (FileNotFoundException e) {
                             logger.error("Error: ${e}")
                         }
                         def initialVersion = pom.version
-                        logger.info("version: ${initialVersion}")
+                        logger.debug("version: ${initialVersion}")
                         if (initialVersion.contains('SNAPSHOT')) {
                             initialVersion = initialVersion.replace('-SNAPSHOT', '')
                         }
-                        logger.info("version: ${initialVersion.split('\\.')}")
+                        logger.debug("version: ${initialVersion.split('\\.')}")
                         def upgradedVersion = initialVersion
-                        switch (config.version.upgrade) {
+                        switch (config.version.increment) {
                             case 'major':
                                 def s = initialVersion.split('\\.')
                                 upgradedVersion = "${s[0].toInteger() + 1}.${s[1]}.${s[2]}"
@@ -60,11 +69,11 @@ def call(Map pipeline_config = [:]) {
             stage('Update Git') {
                 steps {
                     script {
-                        logger.info("new version: ${version}")
+                        logger.info("Updating version in pom.xml to ${version}")
                         pom.version = version
                         // commit new version
-                        sh "git config --global user.email 'ivancordonm@gmail.com'"
-                        sh "git config --global user.name 'icordonm'"
+//                        sh "git config --global user.email 'ivancordonm@gmail.com'"
+//                        sh "git config --global user.name 'icordonm'"
                         withCredentials([gitUsernamePassword(credentialsId: 'Ivan-Github', gitToolName: 'git-tool')]) {
                             checkout scm
                             writeMavenPom file: 'pom.xml', model: pom
