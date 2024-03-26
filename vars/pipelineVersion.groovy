@@ -62,11 +62,11 @@ def call(Map pipeline_config = [:]) {
                     script {
                         logger.info("new version: ${version}")
                         pom.version = version
-                        writeMavenPom file: 'pom.xml', model: pom
                         // commit new version
                         sh "git config --global user.email 'jenkins@localhost'"
                         sh "git config --global user.name 'Jenkins'"
-                        checkout main
+                        checkout smc
+                        writeMavenPom file: 'pom.xml', model: pom
                         sh "git add pom.xml"
                         sh "git commit -m 'Upgrade version to ${version}'"
                         sh "git push origin master"
