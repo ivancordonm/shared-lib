@@ -69,7 +69,8 @@ def call(Map pipeline_config = [:]) {
                         checkout scm
                         sh "git add pom.xml"
                         sh "git commit -m 'Upgrade version to ${version}'"
-                        sh "git push"
+                        sh "git push origin master"
+                        logger.info("Version updated to ${version}")
                     }
                 }
             }
