@@ -65,8 +65,7 @@ def call(Map pipeline_config = [:]) {
                         // commit new version
                         sh "git config --global user.email 'ivancordonm@gmail.com'"
                         sh "git config --global user.name 'icordonm'"
-                        withCredentials([usernamePassword(credentialsId: 'Ivan-Github', passwordVariable: 'GITHUB_PASSWORD', usernameVariable: 'GITHUB_USERNAME')]) {
-                            logger.info("credentials: ${env.GITHUB_USERNAME}")
+                        withCredentials([gitUsernamePassword(credentialsId: 'Ivan-Github', gitToolName: 'git-tool')]) {
                             checkout scm
                             writeMavenPom file: 'pom.xml', model: pom
                             sh "git add pom.xml"
