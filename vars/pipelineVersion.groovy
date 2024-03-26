@@ -66,7 +66,7 @@ def call(Map pipeline_config = [:]) {
                         // commit new version
                         sh "git config --global user.email 'jenkins@localhost'"
                         sh "git config --global user.name 'Jenkins'"
-                        sh "git checkout SMC"
+                        sh "git checkout main"
                         sh "git add pom.xml"
                         sh "git commit -m 'Upgrade version to ${version}'"
                         sh "git push"
